@@ -41,14 +41,14 @@ jobs:
         docker tag $REGISTRY/spring-petclinic-cloud-vets-service $REGISTRY/spring-petclinic-cloud-vets-service:$IMAGE_TAG
         docker tag $REGISTRY/spring-petclinic-cloud-customers-service $REGISTRY/spring-petclinic-cloud-customers-service:$IMAGE_TAG
         docker tag $REGISTRY/spring-petclinic-cloud-admin-server $REGISTRY/spring-petclinic-cloud-admin-server:$IMAGE_TAG
-    - name: Run Trivy vulnerability scanner
-      uses: aquasecurity/trivy-action@master
+    - name: Run docker vulnerability scanner
+      uses: anchore/scan-action@v3
       env:
         REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         IMAGE_TAG: ${{ github.sha }} 
       with:
-         image-ref: '$REGISTRY/spring-petclinic-cloud-visits-service:$IMAGE_TAG'
-         format: 'sarif'
-         output: 'trivy-results.sarif'    
+         image: '$REGISTRY/spring-petclinic-cloud-visits-service:$IMAGE_TAG'
+         fail-build: false
+         severity-cutoff: critical
 
 
