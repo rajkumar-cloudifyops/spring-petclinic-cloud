@@ -58,7 +58,25 @@ jobs:
       with:
          image: '$REGISTRY/spring-petclinic-cloud-vets-service:$IMAGE_TAG'
          fail-build: false
-         severity-cutoff: critical     
+         severity-cutoff: critical   
+    - name: Run docker vulnerability scanner
+      uses: anchore/scan-action@v3
+      env:
+        REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        IMAGE_TAG: ${{ github.sha }} 
+      with:
+         image: '$REGISTRY/spring-petclinic-cloud-customers-service:$IMAGE_TAG'
+         fail-build: false
+         severity-cutoff: critical
+    - name: Run docker vulnerability scanner
+      uses: anchore/scan-action@v3
+      env:
+        REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        IMAGE_TAG: ${{ github.sha }} 
+      with:
+         image: '$REGISTRY/spring-petclinic-cloud-admin-server:$IMAGE_TAG'
+         fail-build: false
+         severity-cutoff: critical                 
 
 
 
