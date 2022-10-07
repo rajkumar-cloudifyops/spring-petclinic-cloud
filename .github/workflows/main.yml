@@ -81,8 +81,8 @@ jobs:
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         IMAGE_TAG: ${{ github.sha }}
-        run: |
-          docker push -a $ECR_REGISTRY/spring-petclinic-cloud-visits-service:$IMAGE_TAG                     
+      run:
+        docker push -a $ECR_REGISTRY/spring-petclinic-cloud-visits-service:$IMAGE_TAG                     
 
 
 
