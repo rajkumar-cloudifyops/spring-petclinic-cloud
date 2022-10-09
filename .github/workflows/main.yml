@@ -79,10 +79,7 @@ jobs:
          severity-cutoff: critical 
     - name: Push Image to ECR. #pushing image to ECR
       env:
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         IMAGE_TAG: ${{ github.sha }}
       run: |
-        docker push -a $ECR_REGISTRY/spring-petclinic-cloud-visits-service                   
-
-
-
+        docker push -a $REGISTRY/spring-petclinic-cloud-visits-service
