@@ -40,7 +40,7 @@ jobs:
         docker tag $REGISTRY/spring-petclinic-cloud-visits-service $REGISTRY/spring-petclinic-cloud-visits-service:$IMAGE_TAG
         docker tag $REGISTRY/spring-petclinic-cloud-vets-service $REGISTRY/spring-petclinic-cloud-vets-service:$IMAGE_TAG
         docker tag $REGISTRY/spring-petclinic-cloud-customers-service $REGISTRY/spring-petclinic-cloud-customers-service:$IMAGE_TAG
-        docker tag $REGISTRY/spring-petclinic-cloud-admin-server $REGISTRY/spring-petclinic-cloud-admin-server:$IMAGE_TAG
+        docker tag $REGISTRY/spring-petclinic-cloud-admin-server $REGISTRY/spring-petclinic-cloud-api-gateway:$IMAGE_TAG
     - name: Run docker vulnerability scanner
       uses: anchore/scan-action@v3
       env:
@@ -74,7 +74,7 @@ jobs:
         REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         IMAGE_TAG: ${{ github.sha }} 
       with:
-         image: '$REGISTRY/spring-petclinic-cloud-admin-server:$IMAGE_TAG'
+         image: '$REGISTRY/spring-petclinic-cloud-api-gateway:$IMAGE_TAG'
          fail-build: false
          severity-cutoff: critical 
     - name: Push Image to ECR. #pushing image to ECR
@@ -83,3 +83,6 @@ jobs:
         IMAGE_TAG: ${{ github.sha }}
       run: |
         docker push -a $REGISTRY/spring-petclinic-cloud-visits-service
+        docker push -a $REGISTRY/spring-petclinic-cloud-vets-service
+        docker push -a $REGISTRY/spring-petclinic-cloud-customers-service
+        docker push -a $REGISTRY/spring-petclinic-cloud-api-gateway
