@@ -43,6 +43,7 @@ jobs:
         docker tag $REGISTRY/spring-petclinic-cloud-admin-server $REGISTRY/spring-petclinic-cloud-api-gateway:$IMAGE_TAG
     - name: Run docker vulnerability scanner
       uses: anchore/scan-action@v3
+      id: scan-visit-service
       env:
         REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         IMAGE_TAG: ${{ github.sha }} 
@@ -50,17 +51,29 @@ jobs:
          image: '$REGISTRY/spring-petclinic-cloud-visits-service:$IMAGE_TAG'
          fail-build: false
          severity-cutoff: critical
+    - name: upload Anchore scan SARIF report - visit-service
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: ${{ steps.scan-visit-service.outputs.sarif }}
+
     - name: Run docker vulnerability scanner
       uses: anchore/scan-action@v3
+      id: scan-vets-service
       env:
         REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         IMAGE_TAG: ${{ github.sha }} 
       with:
          image: '$REGISTRY/spring-petclinic-cloud-vets-service:$IMAGE_TAG'
          fail-build: false
-         severity-cutoff: critical   
+         severity-cutoff: critical  
+    - name: upload Anchore scan SARIF report - vets-service
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: ${{ steps.scan-vets-service.outputs.sarif }}   
+
     - name: Run docker vulnerability scanner
       uses: anchore/scan-action@v3
+      id: scan-customer-service
       env:
         REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         IMAGE_TAG: ${{ github.sha }} 
@@ -68,8 +81,14 @@ jobs:
          image: '$REGISTRY/spring-petclinic-cloud-customers-service:$IMAGE_TAG'
          fail-build: false
          severity-cutoff: critical
+    - name: upload Anchore scan SARIF report - customers-service
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: ${{ steps.scan-customers-service.outputs.sarif }}   
+
     - name: Run docker vulnerability scanner
       uses: anchore/scan-action@v3
+      id: scan-api-service
       env:
         REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         IMAGE_TAG: ${{ github.sha }} 
@@ -77,6 +96,10 @@ jobs:
          image: '$REGISTRY/spring-petclinic-cloud-api-gateway:$IMAGE_TAG'
          fail-build: false
          severity-cutoff: critical 
+    - name: upload Anchore scan SARIF report - api-service
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: ${{ steps.scan-api-service.outputs.sarif }}     
     - name: Push Image to ECR. #pushing image to ECR
       env:
         REGISTRY: ${{ steps.login-ecr.outputs.registry }}
